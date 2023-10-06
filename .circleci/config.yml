@@ -61,9 +61,9 @@ workflows:
       - deploy:
           context:
             - gcp
-          # filters:
-          #   branches:
-          #     only: main
+          filters:
+            branches:
+              only: main
 
   force-deploy:
     when:
