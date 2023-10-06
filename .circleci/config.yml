@@ -29,10 +29,14 @@ jobs:
           name: Install poetry
           command: |
             pip install poetry
-      - run:
-          name: Update version
-          command: |
-            poetry version $(poetry version -s).b$CIRCLE_BUILD_NUM
+      - when:
+          condition:
+            equal: [ force-deploy, << pipeline.parameters.action >> ]
+          steps:
+            - run:
+                name: Update version
+                command: |
+                  poetry version $(poetry version -s).b$CIRCLE_BUILD_NUM
  
 workflows:
   build-and-deploy:
