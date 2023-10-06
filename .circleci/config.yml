@@ -25,8 +25,7 @@ jobs:
           command: |
             echo $GOOGLE_CREDENTIALS_JSON > ./gcloud-key.json
             gcloud auth activate-service-account --key-file=./gcloud-key.json
-            python --version
-            python3 --version
+            echo $CIRCLE_PROJECT_REPONAME
  
 workflows:
   build-and-deploy:
@@ -36,9 +35,9 @@ workflows:
       - deploy:
           context:
             - gcp
-          filters:
-            branches:
-              only: main
+          # filters:
+          #   branches:
+          #     only: main
 
   force-deploy:
     when:
