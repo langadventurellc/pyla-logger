@@ -26,6 +26,7 @@ jobs:
             echo $GOOGLE_CREDENTIALS_JSON > ./gcloud-key.json
             gcloud auth activate-service-account --key-file=./gcloud-key.json
             echo $CIRCLE_BUILD_NUM
+            echo "$CIRCLE_BRANCH" | tr / _
  
 workflows:
   build-and-deploy:
