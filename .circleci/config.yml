@@ -25,8 +25,14 @@ jobs:
           command: |
             echo $GOOGLE_CREDENTIALS_JSON > ./gcloud-key.json
             gcloud auth activate-service-account --key-file=./gcloud-key.json
-            echo $CIRCLE_BUILD_NUM
-            echo "$CIRCLE_BRANCH" | tr / _
+      - run:
+          name: Install poetry
+          command: |
+            pip install poetry
+      - run:
+          name: Update version
+          command: |
+            poetry version $(poetry version -s).b$CIRCLE_BUILD_NUM
  
 workflows:
   build-and-deploy:
