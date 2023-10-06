@@ -34,9 +34,10 @@ jobs:
       - run:
           name: Add Artifact Registry to Poetry
           command: |
-            poetry self add keyrings.google-artifactregistry-auth -n
             poetry source add --priority=supplemental gcp https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/simple
             poetry source add --priority=supplemental gcp-pub https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/
+            poetry config http-basic.gcp oauth2accesstoken $(gcloud auth print-access-token)
+            poetry config http-basic.gcp-pub oauth2accesstoken $(gcloud auth print-access-token)
       - when:
           condition:
             equal: [ force-deploy, << pipeline.parameters.action >> ]
