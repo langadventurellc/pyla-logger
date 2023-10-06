@@ -26,6 +26,7 @@ jobs:
             echo $GOOGLE_CREDENTIALS_JSON > ./gcloud-key.json
             gcloud auth activate-service-account --key-file=./gcloud-key.json
             echo $CIRCLE_PROJECT_REPONAME
+            pip install poetry
  
 workflows:
   build-and-deploy:
