@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 structlog = "^23.1.0"
 
 [tool.poetry.group.dev.dependencies]
