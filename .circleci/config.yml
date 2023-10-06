@@ -31,6 +31,12 @@ jobs:
           name: Install poetry
           command: |
             pip install poetry
+      - run:
+          name: Add Artifact Registry to Poetry
+          command: |
+            poetry self add keyrings.google-artifactregistry-auth -n
+            poetry source add --priority=supplemental gcp https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/simple
+            poetry source add --priority=supplemental gcp-pub https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/
       - when:
           condition:
             equal: [ force-deploy, << pipeline.parameters.action >> ]
@@ -39,6 +45,14 @@ jobs:
                 name: Update version
                 command: |
                   poetry version $(poetry version -s).b$CIRCLE_BUILD_NUM
+      - run:
+          name: Build
+          command: |
+            poetry build
+      - run:
+          name: Publish
+          command: |
+            poetry publish -r gcp-pub
  
 workflows:
   build-and-deploy:
