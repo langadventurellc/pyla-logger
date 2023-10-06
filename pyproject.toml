@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Python logger for LangAdventure products"
 authors = ["LangAdventure"]
 readme = "README.md"
-packages = [{include = "src"}]
+packages = [{include = "py_logger"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -20,7 +20,6 @@ poethepoet = "^0.21.0"
 name = "gcp"
 url = "https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/simple/"
 priority = "supplemental"
-
 
 [[tool.poetry.source]]
 name = "gcp-pub"
