@@ -25,6 +25,8 @@ jobs:
           command: |
             echo $GOOGLE_CREDENTIALS_JSON > ./gcloud-key.json
             gcloud auth activate-service-account --key-file=./gcloud-key.json
+            python --version
+            python3 --version
  
 workflows:
   build-and-deploy:
