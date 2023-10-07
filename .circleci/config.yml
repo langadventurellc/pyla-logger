@@ -13,7 +13,10 @@ parameters:
 jobs:
   deploy:
     docker:
-      - image: cimg/gcp:2023.09
+      - image: us-west1-docker.pkg.dev/langadventure-shared-common/langadventure-docker/gcp-poetry:latest
+        auth:
+          username: _json_key
+          password: $GOOGLE_CREDENTIALS_JSON
     parameters:
       package_name:
         type: string
@@ -25,17 +28,6 @@ jobs:
           command: |
             echo $GOOGLE_CREDENTIALS_JSON > ./gcloud-key.json
             gcloud auth activate-service-account --key-file=./gcloud-key.json
-      - run:
-          name: Install poetry
-          command: |
-            pip install poetry
-      - run:
-          name: Add Artifact Registry to Poetry
-          command: |
-            poetry source add --priority=supplemental gcp https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/simple
-            poetry source add --priority=supplemental gcp-pub https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/
-            poetry config http-basic.gcp oauth2accesstoken $(gcloud auth print-access-token)
-            poetry config http-basic.gcp-pub oauth2accesstoken $(gcloud auth print-access-token)
       - when:
           condition:
             equal: [ force-deploy, << pipeline.parameters.action >> ]

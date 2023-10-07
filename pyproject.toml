@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "py-logger"
+name = "pyla-logger"
 version = "1.0.0"
 description = "Python logger for LangAdventure products"
 authors = ["LangAdventure"]
 readme = "README.md"
-packages = [{include = "py_logger"}]
+packages = [{include = "pyla_logger"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
