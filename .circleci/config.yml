@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  python: circleci/python@3.0.0
+
 parameters:
   deploy-project-id:
     type: string
@@ -25,11 +28,8 @@ jobs:
           command: |
             echo $GOOGLE_CREDENTIALS_JSON > ./gcloud-key.json
             gcloud auth activate-service-account --key-file=./gcloud-key.json
-      - run:
-          name: Setup Poetry
-          command: |
-            poetry lock
-            poetry install
+      - python/install-packages:
+          pkg-manager: poetry
       - run:
           name: Run linter
           command: |
@@ -103,6 +103,7 @@ workflows:
       - deploy:
           context:
             - gcp
+            - github
           filters:
             branches:
               only: main
@@ -114,3 +115,4 @@ workflows:
       - deploy:
           context:
             - gcp
+            - github
