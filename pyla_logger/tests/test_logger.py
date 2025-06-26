@@ -1,4 +1,5 @@
-from unittest.mock import Mock
+import os
+from unittest.mock import Mock, patch
 
 from pyla_logger.logger import Logger
 
@@ -86,6 +87,96 @@ class TestLogger:
     def test_logging_methods_with_args(self):
         self.logger.info("message", "arg1", "arg2", key="value")
         self.mock_logger.info.assert_called_once_with("message", "arg1", "arg2", key="value")
+
+    @patch.dict(os.environ, {"pyla_logger_level": "info"})
+    def test_log_level_filtering_debug_filtered_out(self):
+        mock_logger = Mock()
+        logger = Logger(mock_logger)
+
+        logger.debug("debug message")
+        mock_logger.debug.assert_not_called()
+
+        logger.info("info message")
+        mock_logger.info.assert_called_once_with("info message")
+
+    @patch.dict(os.environ, {"pyla_logger_level": "error"})
+    def test_log_level_filtering_warning_filtered_out(self):
+        mock_logger = Mock()
+        logger = Logger(mock_logger)
+
+        logger.debug("debug message")
+        logger.info("info message")
+        logger.warning("warning message")
+
+        mock_logger.debug.assert_not_called()
+        mock_logger.info.assert_not_called()
+        mock_logger.warning.assert_not_called()
+
+        logger.error("error message")
+        mock_logger.error.assert_called_once_with("error message")
+
+    @patch.dict(os.environ, {"pyla_logger_level": "critical"})
+    def test_log_level_filtering_only_critical(self):
+        mock_logger = Mock()
+        logger = Logger(mock_logger)
+
+        logger.debug("debug message")
+        logger.info("info message")
+        logger.warning("warning message")
+        logger.error("error message")
+
+        mock_logger.debug.assert_not_called()
+        mock_logger.info.assert_not_called()
+        mock_logger.warning.assert_not_called()
+        mock_logger.error.assert_not_called()
+
+        logger.critical("critical message")
+        mock_logger.critical.assert_called_once_with("critical message")
+
+    @patch.dict(os.environ, {"pyla_logger_level": "error"})
+    def test_exception_treated_as_error_level(self):
+        mock_logger = Mock()
+        logger = Logger(mock_logger)
+        exc = Exception("test exception")
+
+        logger.exception(exc, "exception message")
+        mock_logger.exception.assert_called_once_with("exception message", exc_info=exc)
+
+    @patch.dict(os.environ, {"pyla_logger_level": "critical"})
+    def test_exception_filtered_out_when_level_too_high(self):
+        mock_logger = Mock()
+        logger = Logger(mock_logger)
+        exc = Exception("test exception")
+
+        logger.exception(exc, "exception message")
+        mock_logger.exception.assert_not_called()
+
+    def test_default_log_level_is_debug(self):
+        with patch.dict(os.environ, {}, clear=True):
+            mock_logger = Mock()
+            logger = Logger(mock_logger)
+
+            logger.debug("debug message")
+            mock_logger.debug.assert_called_once_with("debug message")
+
+    @patch.dict(os.environ, {"pyla_logger_level": "INVALID"})
+    def test_invalid_log_level_defaults_to_debug(self):
+        mock_logger = Mock()
+        logger = Logger(mock_logger)
+
+        logger.debug("debug message")
+        mock_logger.debug.assert_called_once_with("debug message")
+
+    @patch.dict(os.environ, {"pyla_logger_level": "INFO"})
+    def test_log_level_case_insensitive(self):
+        mock_logger = Mock()
+        logger = Logger(mock_logger)
+
+        logger.debug("debug message")
+        mock_logger.debug.assert_not_called()
+
+        logger.info("info message")
+        mock_logger.info.assert_called_once_with("info message")
 
 
 class TestLoggerIntegration:
