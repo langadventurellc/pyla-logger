@@ -1,20 +1,25 @@
 [tool.poetry]
 name = "pyla-logger"
-version = "1.0.0"
+version = "1.1.0"
 description = "Python logger for LangAdventure products"
 authors = ["LangAdventure"]
 readme = "README.md"
 packages = [{include = "pyla_logger"}]
+exclude = ["pyla_logger/tests"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-structlog = "^23.1.0"
+structlog = "^25.4.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"
 isort = "^5.12.0"
-pylama = {extras = ["toml"], version = "^8.4.1"}
 poethepoet = "^0.21.0"
+setuptools = "^75.8.0"
+pyright = "^1.1.402"
+pytest = "^8.4.0"
+pytest-mock = "^3.14.1"
+flake8-pyproject = "^1.2.3"
 
 [[tool.poetry.source]]
 name = "gcp"
@@ -26,6 +31,10 @@ name = "gcp-pub"
 url = "https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/"
 priority = "supplemental"
 
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.isort]
 multi_line_output = 3
 include_trailing_comma = true
@@ -33,17 +42,29 @@ ensure_newline_before_comments = true
 split_on_trailing_comma = true
 force_grid_wrap = 0
 line_length = 100
-src_paths = ["src"]
+src_paths = ["app"]
 
 [tool.black]
 line-length = 100
 
+[tool.flake8]
+exclude = ["bin/*", "temp", ".venv", "*/.poetry/*"]
+max-line-length = 100
+per-file-ignores = ["pyla_logger/tests/*:WL,EL"]
+ignore = ["WL", "W503"]
+
+[tool.pyla-linters]
+max_function_length = 25
+max_class_length = 200
+
+[tool.pyright]
+include = ["pyla_logger"]
+exclude = ["bin", "temp", ".venv"]
+
 [tool.poe.tasks]
 black = "black ."
 isort = "isort ."
-lint = "pylama"
-autolint = ["black", "isort", "lint"]
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+lint_smells = "flake8 --exit-zero --ignore=E,W,F --select=WL"
+lint = "flake8"
+format = ["black", "isort"]
+autolint = ["black", "isort", "lint_smells", "lint"]

@@ -22,7 +22,7 @@ structlog.configure(
 class Logger:
     def __init__(self, logger) -> None:
         self.logger = logger
-        self.context: dict[str, any] = {}
+        self.context: dict[str, Any] = {}
 
     def add_context(self, **new_values: Any):
         self.context.update(new_values)
@@ -47,7 +47,11 @@ class Logger:
         self._combine_with_context(kw)
         self.logger.critical(event, *args, **kw)
 
-    def _combine_with_context(self, values: dict[str, any]):
+    def exception(self, exc: Exception, event: str | None = None, *args: Any, **kw: Any) -> None:
+        self._combine_with_context(kw)
+        self.logger.exception(event, *args, exc_info=exc, **kw)
+
+    def _combine_with_context(self, values: dict[str, Any]):
         values.update(self.context)
         return values.update(self.context)
 
