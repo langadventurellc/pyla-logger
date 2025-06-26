@@ -4,7 +4,8 @@ version = "1.1.0"
 description = "Python logger for LangAdventure products"
 authors = ["LangAdventure"]
 readme = "README.md"
-packages = [{include = "pyla_logger", from = ".", to = ".", exclude = ["tests"]}]
+packages = [{include = "pyla_logger"}]
+exclude = ["pyla_logger/tests"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
