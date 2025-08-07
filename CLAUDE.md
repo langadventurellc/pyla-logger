@@ -8,26 +8,28 @@ Use context7 MCP to access up-to-date documentation for third-party libraries.
 
 ## Development Setup
 
-The project uses Poetry for dependency management and poethepoet for task running. Python 3.10 is required.
+The project uses UV for dependency management and poethepoet for task running. Python 3.12 is required.
 
 ### Common Development Commands
 
 ```bash
 # Install dependencies
-poetry install
+uv sync
 
 # Code formatting and linting
-poetry run poe format    # Runs black and isort
-poetry run poe autolint  # Runs black, isort, and flake8
-poetry run poe lint      # Run linting only
-poetry run pyright       # Run type checking with Pyright
+uv run poe format    # Runs black and isort
+uv run poe autolint  # Runs black, isort, and flake8
+uv run poe lint      # Run linting only
+uv run poe type-check # Run type checking with Pyright
+uv run poe test      # Run all tests
+uv run poe quality   # Run all quality checks (black, isort, lint, type-check)
 
 # Individual formatting tools
-poetry run poe black     # Format code with black
-poetry run poe isort     # Sort imports
+uv run poe black     # Format code with black
+uv run poe isort     # Sort imports
 
 # Run tests
-poetry run pytest                           # Run all tests
+uv run pytest                           # Run all tests
 ```
 
 ## Architecture
@@ -78,13 +80,13 @@ Avoid "kitchen-sink" modules or folders, such as "helpers.py" or "/utils".
 
 ### Testing
 
-Write unit tests for all API endpoints and business logic. Use the `src/app/tests/` directory to organize tests by module.
+Write unit tests for all API endpoints and business logic. Use the `pyla_logger/tests/` directory to organize tests by module.
 
-Tests use pytest with async support. Test files follow the pattern `test_*.py` and are organized to mirror the source structure. Create `*.http` files in the `http_requests/` directory for all API endpoints to facilitate testing.
+Tests use pytest with async support. Test files follow the pattern `test_*.py` and are organized to mirror the source structure.
 
 ### Type Checking
 
-Use Pyright for type checking. Ensure all code is type-annotated and passes type checks. Run `poetry run pyright` to check types.
+Use Pyright for type checking. Ensure all code is type-annotated and passes type checks. Run `uv run poe type-check` to check types.
 
 - Prefer built-in types (`list`, `dict`, etc.) over `typing.List`, `typing.Dict` unless necessary
 - Use union operator for optional types (e.g., `str | None` instead of `Optional[str]`)
