@@ -1,39 +1,68 @@
-[tool.poetry]
-name = "pyla-logger"
-version = "1.2.0"
-description = "Python logger for LangAdventure products"
-authors = ["LangAdventure"]
-readme = "README.md"
-packages = [{include = "pyla_logger"}]
-exclude = ["pyla_logger/tests"]
-
-[tool.poetry.dependencies]
-python = "^3.10"
-structlog = "^25.4.0"
-
-[tool.poetry.group.dev.dependencies]
-black = "^23.1.0"
-isort = "^5.12.0"
-poethepoet = "^0.21.0"
-setuptools = "^75.8.0"
-pyright = "^1.1.402"
-pytest = "^8.4.0"
-pytest-mock = "^3.14.1"
-flake8-pyproject = "^1.2.3"
-
-[[tool.poetry.source]]
-name = "gcp"
-url = "https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/simple/"
-priority = "supplemental"
-
-[[tool.poetry.source]]
-name = "gcp-pub"
-url = "https://us-west1-python.pkg.dev/langadventure-shared-common/langadventure-python/"
-priority = "supplemental"
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=68", "setuptools-scm>=8", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyla-logger"
+dynamic = ["version"]
+description = "Structured logging library for Python applications"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "GPL-3.0"}
+authors = [
+    {name = "LangAdventure LLC"}
+]
+keywords = ["logging", "structured-logging", "python", "langadventure"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Logging",
+]
+
+dependencies = [
+    "structlog>=25.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "flake8",
+    "flake8-pyproject",
+    "isort",
+    "pyright",
+    "pytest",
+    "pytest-mock",
+    "pre-commit",
+]
+
+[project.urls]
+Homepage = "https://github.com/langadventurellc/pyla-logger"
+Repository = "https://github.com/langadventurellc/pyla-logger"
+Issues = "https://github.com/langadventurellc/pyla-logger/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pyla_logger*"]
+exclude = ["pyla_logger.tests*"]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "build>=1.2.2.post1",
+    "flake8>=7.3.0",
+    "flake8-pyproject>=1.2.3",
+    "isort>=6.0.1",
+    "poethepoet>=0.36.0",
+    "pre-commit>=4.2.0",
+    "pyright>=1.1.403",
+    "pytest>=8.4.1",
+    "pytest-mock>=3.14.1",
+    "setuptools-scm>=8.3.1",
+]
 
 [tool.isort]
 multi_line_output = 3
@@ -42,20 +71,16 @@ ensure_newline_before_comments = true
 split_on_trailing_comma = true
 force_grid_wrap = 0
 line_length = 100
-src_paths = ["app"]
+src_paths = ["pyla_logger"]
 
 [tool.black]
 line-length = 100
 
 [tool.flake8]
-exclude = ["bin/*", "temp", ".venv", "*/.poetry/*"]
+exclude = ["bin/*", "temp", ".venv"]
 max-line-length = 100
 per-file-ignores = ["pyla_logger/tests/*:WL,EL"]
-ignore = ["WL", "W503"]
-
-[tool.pyla-linters]
-max_function_length = 25
-max_class_length = 200
+ignore = ["E203", "W503", "WL"]
 
 [tool.pyright]
 include = ["pyla_logger"]
@@ -66,5 +91,17 @@ black = "black ."
 isort = "isort ."
 lint_smells = "flake8 --exit-zero --ignore=E,W,F --select=WL"
 lint = "flake8"
+type-check = "pyright"
+test = "pytest -q"
 format = ["black", "isort"]
 autolint = ["black", "isort", "lint_smells", "lint"]
+quality = [
+    "black",
+    "isort",
+    "lint",
+    "type-check",
+]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
