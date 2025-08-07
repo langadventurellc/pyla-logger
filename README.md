@@ -171,16 +171,3 @@ os.environ['pyla_logger_level'] = 'error'
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Changelog
-
-### Version 1.2.0
-- Environment-based log level configuration
-- Context management functionality
-- Exception logging with stack traces
-- JSON structured output format
-- Built on structlog foundation
